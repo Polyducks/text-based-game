@@ -1,0 +1,70 @@
+	/*---------------------------
+	RESET
+	---------------------------*/
+	*{
+		box-sizing: border-box;
+	}
+
+	/*---------------------------
+	TEMPLATE
+	---------------------------*/
+	#text-based-game{
+		display: block;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+		background-color: black;
+		font-size: 20px;
+		overflow: auto;
+		border: 1px solid black;
+		font-family: "Lucida Console", Monaco, monospace;
+	}
+		#output{
+			display: inline-block;
+			width: 100%;
+			height: 20em;
+			color: #C6C3C6;
+			line-height: 1;
+			font-weight: bold;
+			font-size: 15px;
+			overflow: auto;
+			white-space: pre-wrap;
+		}
+		
+		#user-input{
+			display: inline-block;
+			width: 90%;
+			margin: 0;
+			float: left;
+			padding: 5px;
+			border: 0px white solid;
+			font-family: "Lucida Console", Monaco, monospace;
+		}
+		
+		#user-send{
+			width: 10%;
+			display: inline-block;
+			margin: 0;
+			float: left;
+			background-color: #70AD80;
+			color: white;
+			border: 0px white solid;
+			cursor: pointer;
+			padding: 5px;
+			font-family: "Lucida Console", Monaco, monospace;
+		}
+		
+	/*---------------------------
+	FONT STYLES FOR THE GAME TEXT
+	---------------------------*/
+	.room-name{
+		color: white;
+	}
+	.room-desc{
+		color: #CCC;
+	}
+	.high{
+		color: white;
+		font-weight: normal;
+		text-transform: uppercase;
+	}

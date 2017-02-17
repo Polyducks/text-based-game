@@ -1,62 +1,6 @@
 <!-- STYLES -->
+<link rel="stylesheet" type="text/css" href="template.css">
 <style>
-
-	/*---------------------------
-	RESET
-	---------------------------*/
-	*{
-		box-sizing: border-box;
-	}
-
-	/*---------------------------
-	TEMPLATE
-	---------------------------*/
-	#text-based-game{
-		display: block;
-		width: 100%;
-		max-width: 600px;
-		margin: 0 auto;
-		background-color: black;
-		font-size: 20px;
-		overflow: auto;
-		border: 1px solid black;
-		font-family: "Lucida Console", Monaco, monospace;
-	}
-		#output{
-			display: inline-block;
-			width: 100%;
-			height: 20em;
-			color: #C6C3C6;
-			line-height: 1;
-			font-weight: bold;
-			font-size: 15px;
-			overflow: auto;
-			white-space: pre-wrap;
-		}
-		
-		#user-input{
-			display: inline-block;
-			width: 90%;
-			margin: 0;
-			float: left;
-			padding: 5px;
-			border: 0px white solid;
-			font-family: "Lucida Console", Monaco, monospace;
-		}
-		
-		#user-send{
-			width: 10%;
-			display: inline-block;
-			margin: 0;
-			float: left;
-			background-color: #70AD80;
-			color: white;
-			border: 0px white solid;
-			cursor: pointer;
-			padding: 5px;
-			font-family: "Lucida Console", Monaco, monospace;
-		}
-		
 	/*---------------------------
 	FONT STYLES FOR THE GAME TEXT
 	---------------------------*/	
@@ -91,6 +35,13 @@
 	.color-13{color: #FF00FF}	/* MAGENTA		*/
 	.color-14{color: #FFFF00}	/* YELLOW		*/
 	.color-15{color: #FFFFFF}	/* WHITE		*/
+	
+	.room-name{
+		color: #00FFFF;
+	}
+	.room-desc{
+		color: #C6C3C6;
+	}
 	
 </style>
 
@@ -177,7 +128,7 @@
 			"room_array" : [ //ROOMS FOR THE GAME
 				{	//ROOM #0
 					"room_name" : "the village market",
-					"room_desc" : "You are stood in the village market. There is a fruit stall "+
+					"room_desc" : "You are stood in the village market of Mudditop. There is a fruit stall "+
 					"to the " + sh + "north" + s + ", a weaponsmith to the " + sh + "east" + s + " and an "+
 					"exit to the " + sh + "south" + s + ".",
 					"choices" : {
@@ -186,6 +137,9 @@
 						},
 						"EAST" : function(){
 							Move( "east", 2 );
+						},
+						"SOUTH" : function(){
+							Move( "south", 4 );
 						}
 					}
 				},
@@ -264,6 +218,27 @@
 					"choices" : {
 						"OUT" : function(){
 							Move("out", 2);
+						},
+						"SALE" : function(){
+							Print_Output("Carl asks to see your certificate to wield weapons. When you are unable to produce it, "+
+							"he politely refuses to sell you weapons.");
+						}
+					}
+				},
+				{	//ROOM #4
+					"room_name" : "the gates of Mudditop",
+					"room_desc" : "A pair of " +sh+ "guards" +s+ " stand watch here, looking at the people coming and going. " +
+								"The path leads " +sh+ "north" +s+ " to the market square and " +sh+ "south" +s+ " onto the road "+
+								"leading away down the hill and out of the village.",
+					"choices" : {
+						"NORTH": function(){
+							Move("north", 0);
+						},
+						"SOUTH": function(){
+							Move("south", 5);
+						},
+						"GUARDS": function(){
+							Print_Output("The guards observe you with suspicion.");
 						}
 					}
 				}
@@ -275,7 +250,7 @@
 		//=====================================================
 		function Move( dir, room ){
 			player.location = room;
-			Print_Output("You move " + dir + " to " + data.room_array[ player.location ].room_name );
+			Print_Output( s3+ "You move " + dir + " to " + data.room_array[ player.location ].room_name ) + s;
 			Display_Room();
 		}
 		function Buy( gold, item ){
@@ -373,7 +348,8 @@
 				//if the player is alive...
 				if ( player.health ){
 				
-					el.output.innerHTML += ">" + input + "<br/>";
+					Print_Output( s15+ ">" + input +s +"<br/>" );
+					//el.output.innerHTML += ">" + input + "<br/>";
 					el.input.value = ">";
 					
 					//we want to match any of the choices for the particular room
@@ -411,7 +387,7 @@
 						if ( globalFoundKey ){
 							data.global_choices[ globalFoundKey ]();
 						}else{
-							Print_Output("Your options are: " + keys + ".");
+							Print_Output(s6 + "Your options are: " + keys.join(", ") + "." + s);
 						}
 					}
 
@@ -452,11 +428,9 @@
 		// MAIN CODE
 		//=====================================================
 		//this code is what happens when you start the game
-		Print_Output("");
-		Print_Output("<span class='title-text'> ▀█▀ █▀█ █▀█ █▀▄ █▀▀ </span>");
-		Print_Output("<span class='title-text'>  █  █▄▀ █▄█ █ █ █▀▀ </span>");
-		Print_Output("<span class='title-text'>  █  █ █ █ █ █▄▀ █▄▄ </span>");
-		Print_Output("");
+		Print_Output(s1+ "1" +s+s2+ "2" +s+s3+ "3" +s+s4+ "4" +s+s5+ "5" +s+s6+ "6" +s+s7+ "7" +s+s8+ "8" +s+s9+ 
+					"9" +s+s10+ "10" +s+s11+ "11" +s+s12+ "12" +s+s13+ "13" +s+s14+ "14" +s+s15+ "15" +s);
+		Print_Output("<img src='title.png'/>");
 		Display_Room();
 		
 	

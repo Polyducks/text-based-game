@@ -20,7 +20,7 @@
 		font-family: "Lucida Console", Monaco, monospace;
 	}
 		#output{
-			display: inline-block;
+			display: block;
 			width: 100%;
 			height: 20em;
 			color: #C6C3C6;
@@ -30,6 +30,11 @@
 			overflow: auto;
 			white-space: pre-wrap;
 		}
+		
+			#output img{
+				display: block;
+				margin: 0 auto;
+			}
 		
 		#user-input{
 			display: inline-block;

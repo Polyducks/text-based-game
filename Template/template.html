@@ -1,0 +1,278 @@
+<!-- STYLES -->
+<link rel="stylesheet" type="text/css" href="template.css">
+<style>
+	/*---------------------------
+	FONT STYLES FOR THE GAME TEXT
+	---------------------------*/	
+	.title-text{
+		color: white;
+		letter-spacing: 0;
+	}
+	.health-title{
+		color: #E14141;
+	}
+	.used-health{
+		color: #7A213A;
+		letter-spacing: 2;
+	}
+	.health{
+		color: #E14141;
+		letter-spacing: 2;
+	}
+	
+	.color-1{color: #000084} 	/* DARK BLUE 	*/
+	.color-2{color: #008200} 	/* DARK GREEN 	*/
+	.color-3{color: #008284} 	/* DARK CYAN 	*/
+	.color-4{color: #840000} 	/* DARK RED 	*/
+	.color-5{color: #840084} 	/* DARK MAGENTA */
+	.color-6{color: #848200} 	/* DARK YELLOW 	*/
+	.color-7{color: #C6C3C6} 	/* LIGHT GREY 	*/
+	.color-8{color: #848284} 	/* DARK GREY 	*/
+	.color-9{color: #0000FF} 	/* BLUE 		*/
+	.color-10{color: #00FF00} 	/* GREEN 		*/
+	.color-11{color: #00FFFF}	/* CYAN			*/
+	.color-12{color: #FF0000}	/* RED			*/
+	.color-13{color: #FF00FF}	/* MAGENTA		*/
+	.color-14{color: #FFFF00}	/* YELLOW		*/
+	.color-15{color: #FFFFFF}	/* WHITE		*/
+	
+	.room-name{
+		color: #00FFFF;
+	}
+	.room-desc{
+		color: #C6C3C6;
+	}
+	
+</style>
+
+
+<!-- HTML INTERFACE OF THE GAME -->
+<section id="text-based-game">
+
+	<div id="output"></div>
+
+	<input id="user-input" type="text" placeholder="enter your command" value="&gt;" autofocus></input>
+	
+	<button id="user-send">SEND</button>
+
+</section>
+
+<div id="preload-images" style="display:none">
+	<!--add any images here to preload them so they don't load when added later-->
+</div>
+
+
+<!-- SCRIPT FOR GAME FUNCTIONALITY -->
+<script>
+	
+	(function(){
+	
+		//======================================
+		// ELEMENTS
+		//======================================
+		var el = {};
+			el.send = document.getElementById("user-send");
+			el.input = document.getElementById("user-input");
+			el.output = document.getElementById("output");
+		
+		//======================================
+		// SHORTCUTS
+		//======================================
+		var sh = "<span class='high'>",
+		s1 = "<span class='color-1'>",
+		s2 = "<span class='color-2'>",
+		s3 = "<span class='color-3'>",
+		s4 = "<span class='color-4'>",
+		s5 = "<span class='color-5'>",
+		s6 = "<span class='color-6'>",
+		s7 = "<span class='color-7'>",
+		s8 = "<span class='color-8'>",
+		s9 = "<span class='color-9'>",
+		s10 = "<span class='color-10'>",
+		s11 = "<span class='color-11'>",
+		s12 = "<span class='color-12'>",
+		s13 = "<span class='color-13'>",
+		s14 = "<span class='color-14'>",
+		s15 = "<span class='color-15'>",
+		s = "</span>";
+		
+		
+		//======================================
+		// DATA
+		//======================================
+		
+		var data = {
+			"global_choices" : { //GLOBAL CHOICES, ACCESSED ANYWHERE IN THE GAME
+				"LOOK" : function(){
+					Display_Room();
+				}
+			},
+			"room_array" : [ //ROOMS FOR THE GAME
+				{	//ROOM #0
+					"room_name" : "an empty room",
+					"room_desc" : "You are stood in a wide empty space.",
+					"choices" : {
+						"NORTH" : function(){
+							Move( "north", 1 );
+						}
+					}
+				},
+				{	//ROOM #1
+					"room_name" : "north of an empty room",
+					"room_desc" : "This room is even more empty than the last.",
+					"choices" : {
+						"SOUTH" : function(){
+							Move("south", 0);
+						}
+					}
+				}
+			],
+		};
+		
+		//=====================================================
+		// STORY FUNCTIONS
+		//=====================================================
+		//add your custom story functions here
+		
+		//=====================================================
+		// PLAYER ATTRIBUTES
+		//=====================================================
+		var player = {};
+			player.health = 5;
+			player.max_health = 5;
+			player.location = 0;
+			player.last_entry = "";
+		
+		//======================================
+		// EVENT LISTENERS
+		//======================================
+		el.send.addEventListener("click", function(){
+			Send_Our_Input();
+		});
+		document.addEventListener("keydown", function(e){
+			switch ( e.keyCode ){
+				case 13:
+					Send_Our_Input();
+				break;
+				case 38:
+					Retrieve_Last_Input();
+				break;
+				default:
+			}
+		});
+		
+		
+		//=====================================================
+		// TEMPLATE FUNCTIONS
+		//=====================================================
+		
+			//-----------------------------------------------------
+			//SEND OUR INPUT TO THE OUTPUT
+			//-----------------------------------------------------
+			function Send_Our_Input(){
+				var input = el.input.value;
+				
+				var sanitation = /\>/;
+				input = input.replace( sanitation, "" );
+				
+				//store input for later
+				player.last_entry = input;
+				
+				//if the player is alive...
+				if ( player.health ){
+				
+					Print_Output( s15+ ">" + input +s +"<br/>" );
+					//el.output.innerHTML += ">" + input + "<br/>";
+					el.input.value = ">";
+					
+					//we want to match any of the choices for the particular room
+					var keys = Object.keys( data.room_array[ player.location ].choices );
+					
+					var foundKey = false;
+					
+					for (x in keys){
+						
+						var regexp = new RegExp("\\b" + keys[x] + "\\b", "gi");
+						
+						if ( regexp.exec( input ) ){
+							foundKey = keys[x];
+							break;
+						}
+						
+					}
+					
+					if ( foundKey ){
+						data.room_array[ player.location ].choices[ foundKey ]();
+					}else{
+						
+						//if command is not found in the room, check the default
+						var globalKeys = Object.keys( data.global_choices );
+						var globalFoundKey = false;
+						for (x in globalKeys){
+							var regexp = new RegExp("\\b" + globalKeys[x] + "\\b", "gi");
+							
+							if ( regexp.exec ( input ) ){
+								globalFoundKey = globalKeys[x];
+								break;
+							}
+						}
+						
+						if ( globalFoundKey ){
+							data.global_choices[ globalFoundKey ]();
+						}else{
+							Print_Output(s6 + "Your options are: " + keys.join(", ") + "." + s);
+						}
+					}
+
+				}else{
+				
+					Print_Output("Sorry, dead people can't <span class='high'>" + input + "</span>. Refresh to try again.");
+					el.input.value = ">";
+					
+				}
+			}
+			
+			//-----------------------------------------------------
+			//RETRIEVE LAST INPUT
+			//-----------------------------------------------------
+			function Retrieve_Last_Input(){
+				var output = ">" + player.last_entry;
+				el.input.value = output;
+			}
+			
+			//-----------------------------------------------------
+			//PRINT OUTPUT
+			//-----------------------------------------------------
+			function Print_Output(output){
+				el.output.innerHTML += output + "<br/>";
+				var heightToScroll = el.output.scrollHeight;
+				el.output.scrollTop = heightToScroll;
+			}
+			
+			//-----------------------------------------------------
+			//DISPLAY ROOM
+			//-----------------------------------------------------
+			function Display_Room(){
+				Print_Output( "<span class='room-name'>" + data.room_array[ player.location ].room_name + "</span>" );
+				Print_Output( "<span class='room-desc'>" + data.room_array[ player.location ].room_desc + "</span>" );
+			}
+			
+			//-----------------------------------------------------
+			//MOVE TO A NEW ROOM
+			//-----------------------------------------------------
+			function Move( dir, room ){
+				player.location = room;
+				Print_Output( s3+ "You move " + dir + " to " + data.room_array[ player.location ].room_name ) + s;
+				Display_Room();
+			}
+			
+		//=====================================================
+		// MAIN CODE
+		//=====================================================
+		//this code is what happens when you start the game
+		Display_Room();
+		
+	
+	})()
+	
+</script>

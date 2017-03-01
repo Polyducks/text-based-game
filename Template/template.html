@@ -58,7 +58,7 @@
 </section>
 
 <div id="preload-images" style="display:none">
-	<img src='mudditop_gates.png'/>
+	<!--add any images here to preload them so they don't load when added later-->
 </div>
 
 
@@ -103,147 +103,26 @@
 		
 		var data = {
 			"global_choices" : { //GLOBAL CHOICES, ACCESSED ANYWHERE IN THE GAME
-				"STATUS" : function(){
-					var playerStatus = s12 + "Health: " + s + s4;
-					for (var i = 0; i < player.max_health - player.health; i++){
-						playerStatus += "♥";
-					}
-					playerStatus += s + s12;
-					for (var i = 0; i < player.health; i++ ){
-						playerStatus += "♥";
-					}
-					playerStatus += s + s14 + " Gold: ∙" + player.gold + s;
-					
-					Print_Output( playerStatus );
-					
-					if ( player.inventory.length > 0 ){
-						Print_Output( "inventory: " + player.inventory.length + "/" + player.max_inv );
-						Print_Output( player.inventory.join(" ") );
-					}
-				},
 				"LOOK" : function(){
 					Display_Room();
-				},
-				"SLIT WRISTS" : function(){
-					player.health--;
-					Print_Output( "You slit your wrists and bleed a little." );
 				}
 			},
 			"room_array" : [ //ROOMS FOR THE GAME
 				{	//ROOM #0
-					"room_name" : "the village market",
-					"room_desc" : "You are stood in the village market of Mudditop. There is a fruit stall "+
-					"to the " + sh + "north" + s + ", a weaponsmith to the " + sh + "east" + s + " and an "+
-					"exit to the " + sh + "south" + s + ".",
+					"room_name" : "an empty room",
+					"room_desc" : "You are stood in a wide empty space.",
 					"choices" : {
 						"NORTH" : function(){
 							Move( "north", 1 );
-						},
-						"EAST" : function(){
-							Move( "east", 2 );
-						},
-						"SOUTH" : function(){
-							Move( "south", 4 );
 						}
 					}
 				},
 				{	//ROOM #1
-					"room_name" : "the fruit stall",
-					"room_desc" : "There are a wide variety of fruits here for sale, with a big list of "+
-					"<span class='high'>prices</span>. To the <span class='high'>south</span> is the village market.",
+					"room_name" : "north of an empty room",
+					"room_desc" : "This room is even more empty than the last.",
 					"choices" : {
 						"SOUTH" : function(){
 							Move("south", 0);
-						},
-						"PRICES" : function(){
-							Print_Output("Written on the sign is:");
-							Print_Output("._________________.");
-							Print_Output("| " + sh + "Orange" + s + ": 5 gold  |");
-							Print_Output("| " + sh + "Apple" + s + ": 1 gold   |");
-							Print_Output("| " + sh + "Pear" + s + ": 2 gold    |");
-							Print_Output("|" + sh + "Grapes" + s + ": 100 gold |");
-							Print_Output("'-----------------'");
-						},
-						"ORANGE" : function(){
-							Print_Output("The stall owner asks if you want to " + sh + "buyorange" + s);
-						},
-						"APPLE" : function(){
-							Print_Output("The stall owner asks if you want to " + sh + "buyapple" + s);
-						},
-						"PEAR" : function(){
-							Print_Output("The stall owner asks if you want to " + sh + "buypear" + s);
-						},
-						"GRAPES" : function(){
-							Print_Output("The stall owner asks if you want to " + sh + "buygrapes" + s);
-						},
-						"BUYORANGE" : function(){
-							if ( Buy(5, "orange") ){
-								Print_Output("You give the shop keeper 5 gold and buy an orange.");
-							}
-						},
-						"BUYAPPLE" : function(){
-							if ( Buy(1, "apple") ){
-								Print_Output("You give the shop keeper 1 gold and buy an apple.");
-							}
-						},
-						"BUYPEAR" : function(){
-							if ( Buy(2, "pear") ){
-								Print_Output("You give the shop keeper 2 gold and buy a pear.");
-							}
-						},
-						"BUYGRAPES" : function(){
-							if ( Buy(100, "grapes") ){
-								Print_Output("You give the shop keeper 100 gold and buy some grapes.");
-							}
-						}
-					}
-				},
-				{	//ROOM #2
-					"room_name" : "Carl's weaponsmithy",
-					"room_desc" : "A heavy smog hangs in the air around the forge. "+
-								sh + "Carl" + s + " is stood behind the counter, sporting a bushy moustache. There "+
-								"is an exit to the "+ sh + "west" + s + ".",
-					"choices" : {
-						"WEST" : function(){
-							Move("north", 0);
-						},
-						"CARL" : function(){
-							//move the player to Carl's back room
-							Print_Output("Carl invites you into the back room.");
-							Move("in", 3);
-						}
-					}
-				},
-				{	//ROOM #3
-					"room_name" : "the back room of Carl's weaponsmithy",
-					"room_desc" : "Less smoky than the front of the shop, but no more clean, Carl's "+
-								"weaponsmithy is littered with different weapons for " + sh + "sale" + s + "." +
-								" There's an exit " + sh + "out" + s + ".",
-					"choices" : {
-						"OUT" : function(){
-							Move("out", 2);
-						},
-						"SALE" : function(){
-							Print_Output("Carl asks to see your certificate to wield weapons. When you are unable to produce it, "+
-							"he politely refuses to sell you weapons.");
-						}
-					}
-				},
-				{	//ROOM #4
-					"room_name" : "the gates of Mudditop",
-					"room_desc" : "<img src='mudditop_gates.png'/><br/>"+
-								"A pair of " +sh+ "guards" +s+ " stand watch here, looking at the people coming and going. " +
-								"The path leads " +sh+ "north" +s+ " to the market square and " +sh+ "south" +s+ " onto the road "+
-								"leading away down the hill and out of the village.",
-					"choices" : {
-						"NORTH": function(){
-							Move("north", 0);
-						},
-						"SOUTH": function(){
-							Move("south", 5);
-						},
-						"GUARDS": function(){
-							Print_Output("The guards observe you with suspicion.");
 						}
 					}
 				}
@@ -253,55 +132,7 @@
 		//=====================================================
 		// STORY FUNCTIONS
 		//=====================================================
-		function Move( dir, room ){
-			player.location = room;
-			Print_Output( s3+ "You move " + dir + " to " + data.room_array[ player.location ].room_name ) + s;
-			Display_Room();
-		}
-		function Buy( gold, item ){
-			if ( player.inventory.length >= player.max_inv && item ){
-				Print_Output("Your inventory is full. You cannot carry that.");
-				return false;
-			}
-			if (player.gold < gold){
-				Print_Output("Sorry, you don't have enough gold for that.");
-				return false;
-			}
-			player.gold -= gold;
-			if (item){
-				player.inventory.push(item);
-			}
-			return true;
-		}
-		function Sell( gold, item ){
-			if ( Check_Inv( item ) ){
-				var index = player.inventory.indexOf( item );
-				player.inventory.splice( index, 1 );
-				player.gold += gold;
-				
-				if ( gold > 0 ){
-					Print_Output( "You sell your " + item + " for " + gold + " gold." )
-				}
-				
-				return true;
-			}
-			if ( gold > 0 ){
-				Print_Output( "You don't have any " + item + " to sell." )
-			}
-			return false;
-		}
-		function Check_Inv( item ){
-			if ( player.inventory.indexOf( item ) > -1 ){
-				return true;
-			}
-			return false;
-		}
-		function The_End(){
-			Print_Output("Have died. Your pauper's status will echo through the ages.");
-			Print_Output("THE END");
-			player.health = 0;
-		}
-		
+		//add your custom story functions here
 		
 		//=====================================================
 		// PLAYER ATTRIBUTES
@@ -310,10 +141,7 @@
 			player.health = 5;
 			player.max_health = 5;
 			player.location = 0;
-			player.gold = 11;
 			player.last_entry = "";
-			player.inventory = [];
-			player.max_inv = 10;
 		
 		//======================================
 		// EVENT LISTENERS
@@ -427,6 +255,15 @@
 			function Display_Room(){
 				Print_Output( "<span class='room-name'>" + data.room_array[ player.location ].room_name + "</span>" );
 				Print_Output( "<span class='room-desc'>" + data.room_array[ player.location ].room_desc + "</span>" );
+			}
+			
+			//-----------------------------------------------------
+			//MOVE TO A NEW ROOM
+			//-----------------------------------------------------
+			function Move( dir, room ){
+				player.location = room;
+				Print_Output( s3+ "You move " + dir + " to " + data.room_array[ player.location ].room_name ) + s;
+				Display_Room();
 			}
 			
 		//=====================================================

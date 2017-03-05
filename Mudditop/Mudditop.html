@@ -116,10 +116,13 @@
 					
 					Print_Output( playerStatus );
 					
-					if ( player.inventory.length > 0 ){
-						Print_Output( "inventory: " + player.inventory.length + "/" + player.max_inv );
-						Print_Output( player.inventory.join(",</br>") + ".");
-					}
+					Show_Inventory();
+				},
+				"INVENTORY": function(){
+					Show_Inventory();
+				},
+				"INV": function(){
+					Show_Inventory();
 				},
 				"LOOK" : function(){
 					Display_Room();
@@ -131,7 +134,7 @@
 						"to increase your wealth. You may do this by buying and selling goods."+
 						"Try typing words which are "+sh+"highlighted like this"+s+"."+s );
 					Print_Output( s9+"Common commands you might find helpful are:"+s );
-					Print_Output( sh+"status"+s+s9+","+s+sh+" LOOK"+s+s9+" and any of the cardinal directions, such as "+s+sh+"NORTH"+s+s9+"."+s );
+					Print_Output( sh+"status"+s+s9+","+s+sh+" INVENTORY"+s+","+sh+" LOOK"+s+s9+" and any of the cardinal directions, such as "+s+sh+"NORTH"+s+s9+"."+s );
 					Print_Output(s9+"------------------"+s);
 					Display_Room();
 				},
@@ -293,12 +296,12 @@
 								" and "+sh+"west"+s+".",
 					"choices"	: {
 						"WEST": function(){
-							Bandits(3);
 							Move("west", 8);
+							Bandits(0);
 						},
 						"EAST": function(){
-							Bandits(3);
 							Move("east", 6);
+							Bandits(0);
 						}
 					}
 				},
@@ -406,7 +409,7 @@
 							Print_Output(s10+"The figure is about a foot tall and carved out of a rich black wood. It has the claws of a crab and a large octopus' head."+s);
 							Print_Output("");
 							Print_Output("Robert interrupts your inspection:");
-							Print_Output(s11+"\"It's a weird wooden figure, isn't it? Would you like to "+sh+"buyfigure"+s+"? It costs 45 gold.\""+s);
+							Print_Output(s11+"\"It's a strange trinket, isn't it? One of the sailors bought it back one day. Would you like to "+sh+"buyfigure"+s+"? It costs 45 gold.\""+s);
 						},
 						"BUYFIGURE": function(){
 							if( Buy( 45, "a wooden figure" ) ){
@@ -457,7 +460,67 @@
 							}
 						},
 						"FRUIT": function(){
+							var fruitOffer = 0;
+							var listOfFruit = [
+								"a pear", "an apple", "an orange", "some grapes"
+							];
+							var fruitPrices = [
+								2,1,5,100
+							];
+							var multiplier = 1.2;
 							
+							for ( var x in player.inventory ){
+								for ( var y in listOfFruit ){
+									if ( player.inventory[x] == listOfFruit[y] ){
+										fruitOffer += fruitPrices[y];
+									}
+								}
+							}
+							
+							fruitOffer = Math.ceil( fruitOffer * multiplier );
+							
+							if (fruitOffer){
+							
+								Print_Output("Robert's ears perk up at the mention of fruit.");
+								Print_Output(s11+"\I can offer you " + fruitOffer + " gold for all the fruit you're carrying. Would you like to "+sh+"sellfruit"+s+"?\""+s);
+							
+							}else{
+							
+								Print_Output("You simply shake your head. You have no apples, oranges, grapes or pears to sell to Robert.");
+							
+							}
+						},
+						"SELLFRUIT": function(){
+							var fruitOffer = 0;
+							var listOfFruit = [
+								"a pear", "an apple", "an orange", "some grapes"
+							];
+							var fruitPrices = [
+								2,1,5,100
+							];
+							var multiplier = 1.2;
+							
+							for ( var x = player.inventory.length-1; x>=0; x-- ){
+								for ( var y in listOfFruit ){
+									if ( player.inventory[x] == listOfFruit[y] ){
+										fruitOffer += fruitPrices[y];
+										player.inventory.splice( x, 1 );
+									}
+								}
+							}
+							
+							fruitOffer = Math.ceil( fruitOffer * multiplier );
+							
+							if (fruitOffer){
+							
+								player.gold += fruitOffer;
+								Print_Output("Carefully wrapping the fruit in a piece of paper, Robert hands you "+ fruitOffer + " gold.");
+							
+							}else{
+							
+								Print_Output("Robert laughs. "+s11+"\"You don't have any fruit to sell! I buy pears, apples, oranges and grapes. Come back when you have some.\"");
+								
+							}
 						}
 					}
 				},
@@ -483,8 +546,11 @@
 				if ( player.gold ){
 					var amount_stolen = Math.ceil( Math.random()*player.gold );
 					player.gold-=amount_stolen;
-					Print_Output( "The bandits pat you down for gold, finding "+s14+ amount_stolen +s+" and pushing you into the dirt.");
-					Print_Output( "Dusting yourself off after the bandits leave, you find you have "+s14+player.gold+s+" gold remaining.");
+					Print_Output( "The bandits pat you down for gold, finding "+s14+ amount_stolen +s+" and "+s12+"knock you out cold."+s);
+					player.health-=2;
+					if (!Check_Death( "You have been murdered by bandits")){
+						Print_Output( "Dusting yourself off after the bandits leave, you find you have "+s14+player.gold+s+" gold remaining.");
+					}
 				}else{
 					Print_Output("The bandits pat you down for gold but find nothing. They shove you out of the way and disappear back into the shadows.");
 				}
@@ -493,6 +559,23 @@
 			}
 		}
 		
+		function Check_Death( cause ){
+			if (player.health <= 0){
+				Print_Output( cause );
+				The_End();
+				return true;
+			}
+			return false;
+		}
+		
+		function Show_Inventory(){
+			if ( player.inventory.length > 0 ){
+				Print_Output( "inventory: " + player.inventory.length + "/" + player.max_inv );
+				Print_Output( player.inventory.join(",</br>") + ".");
+			}else{
+				Print_Output( "You own no worldly goods." );
+			}
+		}
 		
 		function Move( dir, room ){
 			player.location = room;
@@ -539,9 +622,8 @@
 			return false;
 		}
 		function The_End(){
-			Print_Output("Have died. Your pauper's status will echo through the ages.");
+			Print_Output("You have died. Your pauper's status will echo through the ages.");
 			Print_Output("THE END");
-			player.health = 0;
 		}
 		function Roll_Dice(sides, number){
 			function Roll_Die(sides){
@@ -572,6 +654,7 @@
 			//stocked items
 			global.robert.postcard = true;
 			global.robert.figure = true;
+			global.robert.fruitOffer = 0;
 		
 		//======================================
 		// EVENT LISTENERS
@@ -609,7 +692,7 @@
 				player.last_entry = input;
 				
 				//if the player is alive...
-				if ( player.health ){
+				if ( player.health > 0 ){
 				
 					Print_Output( s15+ ">" + input +s +"<br/>" );
 					//el.output.innerHTML += ">" + input + "<br/>";
@@ -656,7 +739,7 @@
 
 				}else{
 				
-					Print_Output("Sorry, dead people can't <span class='high'>" + input + "</span>. Refresh to try again.");
+					Print_Output("Sorry, dead people can't "+sh+input+s+". Refresh to try again.");
 					el.input.value = ">";
 					
 				}

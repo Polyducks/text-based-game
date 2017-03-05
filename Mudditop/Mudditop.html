@@ -118,23 +118,39 @@
 					
 					if ( player.inventory.length > 0 ){
 						Print_Output( "inventory: " + player.inventory.length + "/" + player.max_inv );
-						Print_Output( player.inventory.join(" ") );
+						Print_Output( player.inventory.join(",</br>") + ".");
 					}
 				},
 				"LOOK" : function(){
 					Display_Room();
 				},
+				"HELP" : function(){
+					Print_Output(s9+"------------------"+s);
+					Print_Output( s9+"HELP"+s);
+					Print_Output( s9+"This is a text based game, written by Polyducks. You are a merchant, looking "+
+						"to increase your wealth. You may do this by buying and selling goods."+
+						"Try typing words which are "+sh+"highlighted like this"+s+"."+s );
+					Print_Output( s9+"Common commands you might find helpful are:"+s );
+					Print_Output( sh+"status"+s+s9+","+s+sh+" LOOK"+s+s9+" and any of the cardinal directions, such as "+s+sh+"NORTH"+s+s9+"."+s );
+					Print_Output(s9+"------------------"+s);
+					Display_Room();
+				},
 				"SLIT WRISTS" : function(){
 					player.health--;
 					Print_Output( "You slit your wrists and bleed a little." );
+				},
+				"GIMMEGIMMEGIMME" : function(){
+					player.gold = 999999;
+					Print_Output( "Your wallet suddenly seems heavier.");
 				}
 			},
 			"room_array" : [ //ROOMS FOR THE GAME
 				{	//ROOM #0
 					"room_name" : "the village market",
 					"room_desc" : "You are stood in the village market of Mudditop. There is a fruit stall "+
-					"to the " + sh + "north" + s + ", a weaponsmith to the " + sh + "east" + s + " and an "+
-					"exit to the " + sh + "south" + s + ".",
+					"to the "+sh+"north" +s+ ", a weaponsmith to the " + sh + "east" + s + " and an "+
+					"exit to the "+sh+"south" +s+s6+".</br></br>Standing nearby is a friendly looking sign, reminding "+
+					"you that you can call for "+sh+"HELP"+s+" at any time.",
 					"choices" : {
 						"NORTH" : function(){
 							Move( "north", 1 );
@@ -177,24 +193,16 @@
 							Print_Output("The stall owner asks if you want to " + sh + "buygrapes" + s);
 						},
 						"BUYORANGE" : function(){
-							if ( Buy(5, "orange") ){
-								Print_Output("You give the shop keeper 5 gold and buy an orange.");
-							}
+							Buy(5, "an orange");
 						},
 						"BUYAPPLE" : function(){
-							if ( Buy(1, "apple") ){
-								Print_Output("You give the shop keeper 1 gold and buy an apple.");
-							}
+							Buy(1, "an apple");
 						},
 						"BUYPEAR" : function(){
-							if ( Buy(2, "pear") ){
-								Print_Output("You give the shop keeper 2 gold and buy a pear.");
-							}
+							Buy(2, "a pear");
 						},
 						"BUYGRAPES" : function(){
-							if ( Buy(100, "grapes") ){
-								Print_Output("You give the shop keeper 100 gold and buy some grapes.");
-							}
+							Buy(100, "some grapes");
 						}
 					}
 				},
@@ -246,6 +254,219 @@
 							Print_Output("The guards observe you with suspicion.");
 						}
 					}
+				},
+				{	//ROOM #5
+					"room_name" : "at the foot of a hill",
+					"room_desc" : "A tall hill rises to the "+sh + "north" + s + " with the town of Mudditop sat upon it like a grubby king. " +
+								"The road leads " + sh + "west" +s+  " into a gnarled forest.",
+					"choices" : {
+						"NORTH": function(){
+							Move("uphill", 4);
+						},
+						"WEST": function(){
+							Move("west", 6);
+						}
+					}
+				},
+				{	//ROOM #6
+					"room_name" : "the path to the gnarled forest",
+					"room_desc" : "The beginnings of a forest begin to loom over the path leading "+sh+"west"+s+", their black branches like cracks through " +
+								"the sky. A wrecked "+s12+"sign"+s+" is hanging here. To the "+sh+"east"+s+" the road leads to a hilltop settlement.",
+					"choices"	: {
+						"WEST": function(){
+							Print_Output( "The trees close in either side of the path as you follow it into the forest.");
+							Move("west", 7);
+							
+						},
+						"EAST": function(){
+							Move("east", 5);
+						},
+						"SIGN": function(){
+							Print_Output( "The sign is swinging loosely from a branch. Its letters have been "+
+										"scratched out, but you can still read \""+s12+"BEWARE OF BANDITS"+s+"\" painted in red." );
+						}
+					}
+				},
+				{	//ROOM #7
+					"room_name" : "a path through the gnarled forest",
+					"room_desc" : "It's very dark here in the forest. The shadows seem to grope at you. There is light to the "+sh+"east"+s+
+								" and "+sh+"west"+s+".",
+					"choices"	: {
+						"WEST": function(){
+							Bandits(3);
+							Move("west", 8);
+						},
+						"EAST": function(){
+							Bandits(3);
+							Move("east", 6);
+						}
+					}
+				},
+				{	//ROOM #8
+					"room_name" : "a path through the countryside",
+					"room_desc" : "A narrow path skirts the side of a steep hill, leading to the gnarled forest to the "+sh+"east"+s+" and around "+
+								"the hill to the "+sh+"south"+s+". A large "+sh+"boulder"+s+" has been scratched with a message here.",
+					"choices"	: {
+						"SOUTH": function(){
+							Move("south", 9);
+						},
+						"EAST": function(){
+							Move("east", 7);
+						},
+						"BOULDER": function(){
+							Print_Output("A large boulder the size of an armchair stands by the side of the road. Chiselled into it are the words "+
+										"'BEWARE OF BANDITS IN THE FOREST'. Someone has made a poor attempt to scratch these words out.");
+						}
+					}
+				},
+				{	//ROOM #9
+					"room_name" : "rounding the edge of Beckinsopp hill",
+					"room_desc" : "The path hugs tight to the side of the steep hill. To the "+sh+"south"+s+", a large town overlooking the sea waits at "+
+								"the end of a short walk. The path curves away to the "+sh+"north"+s+", towards the other side of the hill.",
+					"choices"	: {
+						"NORTH": function(){
+							Move("north", 8);
+						},
+						"SOUTH": function(){
+							Move("south", 10);
+						}
+					}
+				},
+				{	//ROOM #10
+					"room_name" : "before the gates of Dockside",
+					"room_desc" : "The iron gates of Dockside lie open to the "+sh+"south"+s+", its wooden walls play host to the shanty towns that lean "+
+								"against it. Towards the middle, a large "+sh+"spire"+s+" overlooks the main square. Sailors come and go as "+
+								"you observe the gates, walking the path leading "+sh+"north"+s+", away from the town.",
+					"choices"	: {
+						"NORTH": function(){
+							Move("north", 9);
+						},
+						"SOUTH": function(){
+							Move("south", 11);
+						},
+						"SPIRE": function(){
+							Print_Output( "A large tower with blue tiles has a large, pale clock face. The hands appear to have got stuck at five past two." );
+						}
+					}
+				},
+				{	//ROOM #11
+					"room_name" : "in the market square of Dockside",
+					"room_desc" : "The town gates stand away to the "+sh+"north"+s+". A tall "+sh+"spire"+s+" stands in the middle of the town, behind a "+
+								"row of buildings to the south. A dingey street leads away to the "+sh+"west"+s+" and a quaint trade shop stands to the "+
+								sh+"east"+s+", promoting its unusual wares.",
+					"choices"	: {
+						"NORTH": function(){
+							Move("north", 10);
+						},
+						"EAST": function(){
+							Move("east", 12);
+						},
+						"SPIRE": function(){
+							Print_Output( "A large tower with blue tiles has a large, pale clock face. The hands appear to have got stuck at five past two." );
+						}
+					}
+				},
+				{	//ROOM #12
+					"room_name" : "inside Robert's Unusual Shop",
+					"room_desc" : "A wide variety of strange things are here - hoisted on the ceiling or hooked to the walls. The tables are overflowing with "+
+								"wooden boxes and trinkets from exotic shores. A large, stuffed "+sh+"swordfish"+s+" hangs over the counter over "+sh+"Robert"+s+" the "+
+								"shopkeeper. The exit is to the "+sh+"west."+s,
+					"choices"	: {
+						"ROBERT": function(){
+							Print_Output( s11+"Robert greets you with overzealous excitement. He takes you on a brief tour of his shop. The things that stand out most are:"+s);
+							if ( global.robert.postcard ){
+								Print_Output( "a vulgar "+sh+"postcard"+s );
+							}
+							if ( global.robert.figure ){
+								Print_Output( "a wooden "+sh+"figure"+s );
+							}
+							Print_Output( "a collection of sea "+sh+"shells"+s );
+							Print_Output("");
+							Print_Output("He also asks if you have any "+sh+"fruit"+s+" to sell.");
+						},
+						"SWORDFISH": function(){
+							Print_Output("Hanging by ropes and looking a little past its best, this swordfish has been patched several times over the years.");
+						},
+						"WEST": function(){
+							Move("west", 11);
+						},
+						"POSTCARD": function(){
+							Print_Output(s10+"The postcard looks to have been illustrated by monks from a distant land. It depicts a creature with a centaur's head and a "+
+								"man's body fornicating with a creature with a woman's legs and a mermaid's head and torso. It is very detailed and graphic."+s);
+							Print_Output("");
+							Print_Output("Robert interrupts your inspection:");
+							Print_Output(s11+"\"I see you've seen the postcard. Would you like to "+sh+"buypostcard"+s+"? It costs 20 gold.\""+s);
+						},
+						"BUYPOSTCARD": function(){
+							if( Buy( 20, "a vulgar postcard" ) ){
+								global.robert.postcard = false;
+							}
+						},
+						"FIGURE": function(){
+							Print_Output(s10+"The figure is about a foot tall and carved out of a rich black wood. It has the claws of a crab and a large octopus' head."+s);
+							Print_Output("");
+							Print_Output("Robert interrupts your inspection:");
+							Print_Output(s11+"\"It's a weird wooden figure, isn't it? Would you like to "+sh+"buyfigure"+s+"? It costs 45 gold.\""+s);
+						},
+						"BUYFIGURE": function(){
+							if( Buy( 45, "a wooden figure" ) ){
+								global.robert.figure = false;
+							}
+						},
+						"SHELLS": function(){
+							Print_Output(s10+"There is a large wicker basket of shells collected from the beach in a great variety of colours and shapes. They seem to be sold individually."+s);
+							Print_Output("");
+							Print_Output("Robert interrupts your inspection:");
+							Print_Output(s11+"\"Shells are one of those things I always have in stock, what with us being right near the beach. Would you like to "+
+										sh+"buyshell"+s+"? They're 5 gold each."+s);
+						},
+						"BUYSHELL": function(){
+							if(Buy( 5, "a unique shell")){
+								var shapes = [
+									"a spiral",
+									"a pointed",
+									"a flat",
+									"a curvy",
+									"a sharp",
+									"a smooth",
+									"a round",
+									"an angular",
+									"a crowned",
+									"a shiny"
+								];
+								var colours = [
+									"pink",
+									"white",
+									"beige",
+									"purple",
+									"green"
+								];
+								var species = [
+									"scallop",
+									"mussel",
+									"clam",
+									"winkle",
+									"snail",
+									"razor",
+									"oyster"
+								];
+								var shape_random = Math.floor( Math.random() * shapes.length );
+								var colour_random = Math.floor( Math.random() * colours.length );
+								var species_random = Math.floor( Math.random() * species.length );
+								Print_Output(s15+"You pick up " + shapes[shape_random] + ", " + colours[colour_random] + " " + species[species_random] + " shell."+s);
+							}
+						},
+						"FRUIT": function(){
+							
+						}
+					}
+				},
+				{	//ROOM #
+					"room_name" : "",
+					"room_desc" : "",
+					"choices"	: {
+						
+					}
 				}
 			],
 		};
@@ -253,6 +474,26 @@
 		//=====================================================
 		// STORY FUNCTIONS
 		//=====================================================
+		
+		//BANDITS ENCOUNTER
+		function Bandits( chance ){
+			var chance = Math.floor( Math.random() * chance );
+			if (chance == 0){
+				Print_Output( s12+"As you attempt to go about your business, you are stopped by some rather rough looking thugs."+s );
+				if ( player.gold ){
+					var amount_stolen = Math.ceil( Math.random()*player.gold );
+					player.gold-=amount_stolen;
+					Print_Output( "The bandits pat you down for gold, finding "+s14+ amount_stolen +s+" and pushing you into the dirt.");
+					Print_Output( "Dusting yourself off after the bandits leave, you find you have "+s14+player.gold+s+" gold remaining.");
+				}else{
+					Print_Output("The bandits pat you down for gold but find nothing. They shove you out of the way and disappear back into the shadows.");
+				}
+			}else{
+				Print_Output( s8+"You have the sensation of being watched by unsavoury characters, but they decide not to bother you."+s );
+			}
+		}
+		
+		
 		function Move( dir, room ){
 			player.location = room;
 			Print_Output( s3+ "You move " + dir + " to " + data.room_array[ player.location ].room_name ) + s;
@@ -270,6 +511,7 @@
 			player.gold -= gold;
 			if (item){
 				player.inventory.push(item);
+				Print_Output("You buy "+item+" for "+gold+" gold and it's added to your inventory. (check "+sh+"status"+s+")");
 			}
 			return true;
 		}
@@ -301,7 +543,16 @@
 			Print_Output("THE END");
 			player.health = 0;
 		}
-		
+		function Roll_Dice(sides, number){
+			function Roll_Die(sides){
+				return Math.ceil( Math.random()*sides );
+			}
+			var sum = 0;
+			for (var i = 0; i < number; i++){
+				sum += Roll_Die(sides);
+			}
+			return sum;
+		}
 		
 		//=====================================================
 		// PLAYER ATTRIBUTES
@@ -314,6 +565,13 @@
 			player.last_entry = "";
 			player.inventory = [];
 			player.max_inv = 10;
+			player.time = 0;
+			
+		var global = {};
+			global.robert = {};
+			//stocked items
+			global.robert.postcard = true;
+			global.robert.figure = true;
 		
 		//======================================
 		// EVENT LISTENERS
@@ -433,8 +691,6 @@
 		// MAIN CODE
 		//=====================================================
 		//this code is what happens when you start the game
-		Print_Output(s1+ "1" +s+s2+ "2" +s+s3+ "3" +s+s4+ "4" +s+s5+ "5" +s+s6+ "6" +s+s7+ "7" +s+s8+ "8" +s+s9+ 
-					"9" +s+s10+ "10" +s+s11+ "11" +s+s12+ "12" +s+s13+ "13" +s+s14+ "14" +s+s15+ "15" +s);
 		Print_Output("<img src='title.png'/>");
 		Display_Room();
 		

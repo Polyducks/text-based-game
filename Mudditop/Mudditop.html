@@ -548,7 +548,7 @@
 					player.gold-=amount_stolen;
 					Print_Output( "The bandits pat you down for gold, finding "+s14+ amount_stolen +s+" and "+s12+"knock you out cold."+s);
 					player.health-=2;
-					if (!Check_Death( "You have been murdered by bandits")){
+					if (!Check_Death( "You have been murdered by bandits.")){
 						Print_Output( "Dusting yourself off after the bandits leave, you find you have "+s14+player.gold+s+" gold remaining.");
 					}
 				}else{
